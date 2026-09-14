@@ -1,0 +1,122 @@
+[
+  {
+    "id": "p-1001",
+    "name": "官网首页改版",
+    "description": "2026 新版品牌首页，突出产品矩阵与案例展示。",
+    "status": "published",
+    "thumbnail": "",
+    "icon": "el-icon-s-home",
+    "color": "#409eff",
+    "previewUrl": "https://element.eleme.cn/#/zh-CN/component/layout",
+    "previewType": "iframe",
+    "updatedAt": "2026-09-12T10:24:00.000Z"
+  },
+  {
+    "id": "p-1002",
+    "name": "双十一营销活动页",
+    "description": "大促落地页，含倒计时、优惠券领取与商品楼层。",
+    "status": "draft",
+    "thumbnail": "",
+    "icon": "el-icon-present",
+    "color": "#f56c6c",
+    "previewUrl": "https://element.eleme.cn/#/zh-CN/component/card",
+    "previewType": "iframe",
+    "updatedAt": "2026-09-13T18:02:00.000Z"
+  },
+  {
+    "id": "p-1003",
+    "name": "帮助中心文档站",
+    "description": "FAQ 与新手引导，支持搜索与分类筛选。",
+    "status": "published",
+    "thumbnail": "",
+    "icon": "el-icon-question",
+    "color": "#67c23a",
+    "previewUrl": "https://element.eleme.cn/#/zh-CN/component/collapse",
+    "previewType": "iframe",
+    "updatedAt": "2026-08-30T09:15:00.000Z"
+  },
+  {
+    "id": "p-1004",
+    "name": "后台数据看板",
+    "description": "运营核心指标可视化，含折线、柱状与地图。",
+    "status": "offline",
+    "thumbnail": "",
+    "icon": "el-icon-data-line",
+    "color": "#e6a23c",
+    "previewUrl": "https://element.eleme.cn/#/zh-CN/component/table",
+    "previewType": "iframe",
+    "updatedAt": "2026-07-21T14:40:00.000Z"
+  },
+  {
+    "id": "p-1005",
+    "name": "会员中心",
+    "description": "用户资料、积分与订单管理聚合页。",
+    "status": "published",
+    "thumbnail": "",
+    "icon": "el-icon-user",
+    "color": "#9254de",
+    "previewUrl": "https://element.eleme.cn/#/zh-CN/component/form",
+    "previewType": "iframe",
+    "updatedAt": "2026-09-10T11:30:00.000Z"
+  },
+  {
+    "id": "p-1006",
+    "name": "商品详情页 A/B",
+    "description": "详情页实验版本，测试不同主图与卖点布局。",
+    "status": "draft",
+    "thumbnail": "",
+    "icon": "el-icon-goods",
+    "color": "#13c2c2",
+    "previewUrl": "https://element.eleme.cn/#/zh-CN/component/carousel",
+    "previewType": "iframe",
+    "updatedAt": "2026-09-14T08:05:00.000Z"
+  },
+  {
+    "id": "p-1007",
+    "name": "品牌故事 H5",
+    "description": "移动端长滚动叙事页，讲述品牌发展历程。",
+    "status": "published",
+    "thumbnail": "",
+    "icon": "el-icon-reading",
+    "color": "#eb2f96",
+    "previewUrl": "https://element.eleme.cn/#/zh-CN/component/steps",
+    "previewType": "iframe",
+    "updatedAt": "2026-09-05T16:48:00.000Z"
+  },
+  {
+    "id": "p-1008",
+    "name": "直播预约页",
+    "description": "直播间预热，支持预约提醒与嘉宾介绍。",
+    "status": "draft",
+    "thumbnail": "",
+    "icon": "el-icon-video-camera",
+    "color": "#fa8c16",
+    "previewUrl": "https://element.eleme.cn/#/zh-CN/component/timeline",
+    "previewType": "iframe",
+    "updatedAt": "2026-09-13T20:11:00.000Z"
+  },
+  {
+    "id": "p-1009",
+    "name": "404 错误页",
+    "description": "统一异常兜底页，提供返回首页入口。",
+    "status": "offline",
+    "thumbnail": "",
+    "icon": "el-icon-warning",
+    "color": "#909399",
+    "previewUrl": "https://element.eleme.cn/#/zh-CN/component/result",
+    "previewType": "iframe",
+    "updatedAt": "2026-06-18T13:22:00.000Z"
+  },
+  {
+    "id": "p-1010",
+    "name": "问卷调查页",
+    "description": "NPS 满意度调研，支持多题型与进度条。",
+    "status": "published",
+    "thumbnail": "",
+    "icon": "el-icon-edit-outline",
+    "color": "#2f54eb",
+    "previewUrl": "https://element.eleme.cn/#/zh-CN/component/radio",
+    "previewType": "iframe",
+    "updatedAt": "2026-09-08T10:00:00.000Z"
+  }
+]

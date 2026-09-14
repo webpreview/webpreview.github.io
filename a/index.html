@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>模板页 A · Template A</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+          'Microsoft YaHei', sans-serif;
+        background: #f5f7fa;
+        color: #303133;
+      }
+      .wrap {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 48px 20px;
+      }
+      .card {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        padding: 32px;
+      }
+      h1 { font-size: 22px; margin: 0 0 8px; }
+      .tag {
+        display: inline-block;
+        background: #ecf5ff;
+        color: #409eff;
+        border-radius: 4px;
+        padding: 2px 10px;
+        font-size: 12px;
+        margin-bottom: 16px;
+      }
+      p { line-height: 1.7; color: #606266; }
+      code {
+        background: #f0f2f5;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 13px;
+      }
+      .footer { margin-top: 20px; font-size: 12px; color: #c0c4cc; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="card">
+        <span class="tag">TEMPLATE A</span>
+        <h1>独立静态页 A</h1>
+        <p>
+          该页面由 <code>public/a/index.html</code> 在构建时直接复制到
+          <code>dist/a/</code> 目录，发布后访问路径不含 <code>template</code> 段。
+        </p>
+        <p>
+          部署到 GitHub Pages（仓库名 <code>preview-page</code>）后，可通过
+          <code>/preview-page/a/</code> 路径直接访问本页，并可在仓库中静态修改。
+        </p>
+        <p class="footer">Generated template · 可直接替换为任意静态页面内容。</p>
+      </div>
+    </div>
+  </body>
+</html>
