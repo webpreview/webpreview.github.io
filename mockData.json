@@ -1,13 +1,14 @@
 [
   {
     "id": "p-1001",
-    "name": "官网首页改版",
-    "description": "2026 新版品牌首页，突出产品矩阵与案例展示。",
+    "name": "后台管理系统模板",
+    "description": "vue2全家桶(vue2 + vux + axios + vue-router + element-ui) 后台管理系统",
     "status": "published",
     "thumbnail": "",
     "icon": "el-icon-s-home",
     "color": "#409eff",
-    "previewUrl": "https://element.eleme.cn/#/zh-CN/component/layout",
+    "previewUrl": "https://webpreview.github.io/vue-admin-template",
+    "codeUrl": "https://gitee.com/caselibrary/vue-admin-template",
     "previewType": "iframe",
     "updatedAt": "2026-09-12T10:24:00.000Z"
   },
