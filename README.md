@@ -1,109 +1,260 @@
-# Vue Admin + Electron
+# 页面预览中心（preview-page）
 
-基于 `vue-admin-template`（Vue 2 + Element UI）集成 Electron，可同时作为 **Web 应用** 与 **桌面应用** 运行。
+基于 **Vue 2 + Element-UI** 的页面集中管理与预览平台。将多个页面（含静态模板页与外部链接）统一聚合到一个看板中，支持搜索、排序、详情查看与实时预览，构建产物为纯静态文件，可直接托管到任意静态服务器或 GitHub Pages。
 
 ## 预览
-<p align="left">
-  <img width="900" src="https://cdn.jsdelivr.net/gh/webpreview/img-cdn@main/vue-admin-electron-pre.png">
+> 在线预览：[https://webpreview.github.io/](https://webpreview.github.io/)
+<p align="center">
+  <img width="900" src="https://cdn.jsdelivr.net/gh/webpreview/img-cdn@main/preview-page.png">
 </p>
 
-## 功能
+---
 
-- 登录 / 注销（桌面端由主进程本地 Mock 服务提供接口，无需后端）
-- 权限校验（路由级 + `v-permission` 指令级）
-- 多语言（中/英/西/日）
-- 动态侧边栏、面包屑、TagsView
-- 全局搜索（支持拼音）、全屏
-- 开发环境热重载（HMR）
+## 技术栈
 
-## 项目结构
+| 分类 | 技术 |
+| --- | --- |
+| 框架 | Vue `^2.6.14` |
+| UI 组件库 | Element-UI `^2.15.14` |
+| 构建工具 | `@vue/cli-service` `^4.5.19`（Vue CLI） |
+| 模板编译 | `vue-template-compiler` `^2.6.14` |
+| 部署工具 | `gh-pages` `^5.0.0` |
 
-```
-├── mock                     # Mock 数据（mockjs，供主进程本地 HTTP 服务使用）
-├── public                   # 静态资源（favicon 等）
-├── src
-│   ├── api                  # 接口请求
-│   ├── background.js        # Electron 主进程（窗口 / 本地 Mock 服务）
-│   ├── preload.js           # 预加载脚本（向渲染进程暴露 API 地址）
-│   ├── components           # 通用组件（含 HeaderSearch）
-│   ├── router               # 路由（hash 模式，适配 file:// 协议）
-│   ├── store / views / ...  # Vuex / 页面
-│   ├── utils/request.js     # axios 封装，baseURL 取自 preload 或环境变量
-│   ├── main.js              # 入口（Electron 构建时关闭渲染进程内 mock）
-│   └── ...
-├── build                    # 打包资源目录（图标等）
-├── vue.config.js            # publicPath 按环境切换，devServer 在 Electron 模式不自动开浏览器
-└── package.json             # main / build / electron 脚本与依赖
-```
+---
 
-## 环境差异与登录请求原理
+## 环境要求
 
-| 场景 | 页面来源 | API 地址 | 接口由谁提供 |
-| --- | --- | --- | --- |
-| `npm run dev`（Web 开发） | http://localhost:9528（dev-server） | 相对路径（dev-server 中间件） | vue-cli dev-server 的 mock 中间件 |
-| `npm run electron:serve`（桌面开发） | http://localhost:9528（dev-server） | 相对路径 | dev-server mock 中间件 + HMR |
-| `npm run electron:build`（桌面生产） | `http://127.0.0.1:34567`（主进程同源托管） | `http://127.0.0.1:34567`（同源，空串亦可） | **主进程本地 HTTP 服务（同源托管页面 + Mock API）** |
+- **Node.js**：建议 `12.x` ~ `16.x`（Vue CLI 4.x 兼容范围；不推荐使用 Node 18+ 以避免潜在依赖问题）
+- **包管理器**：`npm`（随 Node 安装）或 `yarn`
+- 具备可访问 npm 源的网络环境（首次安装依赖需要联网）
 
-> 关键点：早期方案以 `file://` 加载页面、再用 `http://127.0.0.1` 调接口，会因 `file://` 源 + 跨域(CORS)在部分环境下报 `Network Error`。现改为**主进程在同一端口同源托管页面与 API**，渲染进程以 `http` 加载，彻底规避 `file://` 协议与跨域问题。
+---
 
-## 开发（Web）
+## 项目脚本
+
+`package.json` 中已内置以下脚本：
+
+| 命令 | 说明 |
+| --- | --- |
+| `npm run serve` | 启动本地开发服务器（默认端口 `8080`，自动打开浏览器） |
+| `npm run build` | 生产构建，输出到 `dist/` 目录 |
+| `npm run lint` | 代码风格检查与自动修复 |
+| `npm run deploy` | 构建并发布到 GitHub Pages（`gh-pages` 分支） |
+
+---
+
+## 1. 安装依赖
+
+首次运行或克隆仓库后，需先安装依赖：
 
 ```bash
+# 进入项目根目录
+cd preview-page
+
+# 使用 npm
 npm install
-npm run dev              # http://localhost:9528
+
+# （可选）如使用 yarn
+# yarn install
 ```
 
-## 桌面端开发（带热重载）
+依赖安装完成后，项目目录会生成 `node_modules/`（已被 `.gitignore` 忽略，无需提交）。
+
+---
+
+## 2. 运行开发环境
 
 ```bash
-npm run electron:serve   # 并发启动 dev-server 与 Electron，F12 可开 DevTools
+npm run serve
 ```
 
-## 桌面端打包
+- 默认监听 `http://localhost:8080`，并自动打开浏览器。
+- 数据源采用 Mock 模式（详见 [配置说明](#5-配置说明)），数据来自 `public/mockData.json`，修改该文件后刷新页面即可生效，无需重启服务。
+- 开发环境使用**相对路径** `publicPath: './'`，资源可正常加载。
+
+如端口被占用，可在 `vue.config.js` 的 `devServer.port` 中修改端口，或临时指定：
 
 ```bash
-npm run electron:build:win     # Windows (nsis)
-npm run electron:build:mac     # macOS (dmg)
-npm run electron:build:linux   # Linux (AppImage)
-npm run electron:build         # 当前平台
+npx vue-cli-service serve --port 3000
 ```
 
-打包脚本会注入 `VUE_APP_BASE_API=http://127.0.0.1:34567` 与 `VUE_APP_ELECTRON=true`：
-- `VUE_APP_ELECTRON=true`：关闭渲染进程内 Mock，改由主进程服务接管。
-- `VUE_APP_BASE_API`：作为 API 地址兜底（实际以 `preload` 暴露的 `electronAPI.apiBaseUrl` 为准）。
+---
 
-产物输出到 `dist_electron/`。
+## 3. 构建打包
 
-## 登录
+执行生产构建：
 
-- 账号：`admin` / `editor` / `zhangsan` 等，密码任意（≥6 位），由主进程 Mock 服务返回对应角色路由。
-- 具体账号见 `mock/user.js`。
+```bash
+npm run build
+```
 
-### 接入真实后端（替代 Mock）
+构建过程会：
 
-1. 创建 `.env.production`（或对应环境文件），设置：
-   ```bash
-   VUE_APP_MOCK=false
-   VUE_APP_BASE_API=https://your-api.example.com
-   ```
-2. 重新执行 `npm run electron:build:win`。
-3. 后端需允许跨域：由于桌面端源为 `file://`（null origin），响应头需包含
-   `Access-Control-Allow-Origin: *`（或 `null`），并允许 `Content-Type`、`X-Token` 头与 `OPTIONS` 预检。
+1. 读取 `.env` 与 `.env.production`（Vue CLI 在 `build` 时自动加载 `*.production` 文件）。
+2. 依据 `VUE_APP_PUBLIC_PATH` 设置 `publicPath`（生产环境默认为 `/preview-page/`，见 `.env.production`）。
+3. 将编译产物输出到 `dist/` 目录（含 `static/` 资源子目录），并将 `public/` 下的静态文件（含 `a/`、`b/`、`c/` 模板页与 `mockData.json`）**原样复制**到 `dist/` 根目录。
 
-## 权限控制（RBAC）
+> 构建产物 `dist/` 已被 `.gitignore` 忽略，无需提交。
 
-基于角色的访问控制：用户关联角色，角色决定可访问路由与界面元素。
+### 产物结构示意
 
-- **路由级**：动态路由经 `generateRoutes` 过滤后以 `addRoute` 注入。
-- **指令级**：`<el-button v-permission="['admin']">删除</el-button>`。
+```text
+dist/
+├── index.html                 # 应用入口
+├── mockData.json              # 运行时数据源（可静态修改）
+├── a/index.html               # 静态模板页 A
+├── b/index.html               # 静态模板页 B
+├── c/index.html               # 静态模板页 C
+└── static/                    # JS / CSS / 图片等编译资源
+    ├── css/
+    └── js/
+```
 
-内置角色见 `mock/user.js`：`admin`（全部）、`editor`、`addor`、`lisi` 等。
+---
 
-## 常见问题
+## 4. 各平台产物使用说明
 
-- **打包后登录报 Network Error**：确认是桌面生产环境。若误用渲染进程内 Mock，请改用本方案的「主进程本地 Mock 服务」；若用真实后端，检查 `VUE_APP_BASE_API` 与后端 CORS。
-- **HeaderSearch 报 weights 超限**：`src/components/HeaderSearch/index.vue` 中 Fuse 各 `key` 的 `weight` 之和必须 ≤ 1（已设为 `0.6/0.2/0.2`）。
+构建产物为**纯静态文件**，可根据托管场景选择不同的 `publicPath` 配置。关键在于：不同托管位置决定了访问根路径，需保证 `publicPath` 与部署路径一致。
 
-## License
+### 场景 A：本地 / 任意「相对路径」静态托管
 
-MIT
+默认构建（或以相对路径构建）后，可直接用任意静态服务器托管：
+
+```bash
+# 1) 构建（使用相对路径 ./）
+#    临时指定：
+VUE_APP_PUBLIC_PATH=./ npm run build
+# 或直接用默认构建（默认生产已设为 /preview-page/，本地托管建议改为 ./）
+
+# 2) 进入产物目录并启动静态服务器
+cd dist
+npx serve .            # 或：python -m http.server 8080
+```
+
+- 访问 `http://localhost:8080`（或 `serve` 输出的地址）即可。
+- 此方式适用于本地预览、内网服务器、对象存储（OSS/COS）等**以根目录或任意路径托管**的场景。
+
+### 场景 B：GitHub Pages 项目站点（当前默认）
+
+本仓库已针对 GitHub Pages 项目站点（仓库名 `preview-page`，站点根路径为 `/preview-page/`）配置：
+
+- `.env.production` 中已设置 `VUE_APP_PUBLIC_PATH=/preview-page/`。
+- 直接执行 `npm run build` 即生成符合该路径的产物。
+
+部署到 GitHub Pages：
+
+```bash
+npm run deploy
+```
+
+该命令等价于 `npm run build && gh-pages -d dist`，会：
+
+1. 重新构建；
+2. 将 `dist/` 推送到仓库的 `gh-pages` 分支；
+3. 在仓库 **Settings → Pages** 中，将发布源设为 `gh-pages` 分支（根目录）后即可访问。
+
+线上地址：[https://webpreview.github.io/](https://webpreview.github.io/)
+
+> 注意：`VUE_APP_PUBLIC_PATH` 结尾必须带 `/`，否则子资源 404。
+
+### 场景 C：自定义子路径 / 自建 Web 服务器（如 Nginx）
+
+若部署到自有域名下的某个子路径（例如 `https://example.com/preview/`），修改 `.env.production` 或构建时传入对应值：
+
+```bash
+VUE_APP_PUBLIC_PATH=/preview/ npm run build
+```
+
+以 Nginx 托管为例，将 `dist/` 内容放到站点子目录后，访问 `https://example.com/preview/` 即可。Nginx 最小配置参考：
+
+```nginx
+server {
+  listen 80;
+  server_name example.com;
+
+  location /preview/ {
+    alias /var/www/preview-page/dist/;
+    try_files $uri $uri/ /preview/index.html;
+  }
+}
+```
+
+### 各场景对照表
+
+| 托管场景 | publicPath 取值 | 构建方式 | 访问地址示例 |
+| --- | --- | --- | --- |
+| 本地 / 相对路径托管 | `./` | `VUE_APP_PUBLIC_PATH=./ npm run build` | `http://localhost:8080/` |
+| GitHub Pages 项目站点 | `/preview-page/` | `npm run build`（默认） | `https://<user>.github.io/preview-page/` |
+| 自定义子路径 | `/preview/` | `VUE_APP_PUBLIC_PATH=/preview/ npm run build` | `https://example.com/preview/` |
+| 自有域名根目录 | `/` | `VUE_APP_PUBLIC_PATH=/ npm run build` | `https://example.com/` |
+
+---
+
+## 5. 配置说明
+
+### 环境变量文件
+
+| 文件 | 生效时机 | 关键变量 |
+| --- | --- | --- |
+| `.env` | 始终加载 | `VUE_APP_USE_MOCK`、`VUE_APP_API_BASE` |
+| `.env.production` | 仅 `npm run build` 时 | `VUE_APP_PUBLIC_PATH=/` |
+
+`.env` 内容要点：
+
+```bash
+VUE_APP_USE_MOCK=true        # 是否使用本地模拟数据
+VUE_APP_API_BASE=/api        # 对接真实后端时的接口基础路径
+```
+
+### 切换为真实后端
+
+1. 将 `.env` 中 `VUE_APP_USE_MOCK` 改为 `false`。
+2. 在 `src/api/pageApi.js` 中启用已注释的 axios 实现（视图组件无需改动）。
+3. 通过 `VUE_APP_API_BASE` 配置接口前缀（如 `/api`）。
+
+---
+
+## 6. 数据源与更新
+
+页面列表数据来自 **`public/mockData.json`**，运行时由 `src/api/pageApi.js` 通过 `fetch` 读取，**不会被打包进 bundle**。
+
+- 字段：`id`、`name`、`description`、`status`（published/draft/offline）、`icon`、`color`、`previewUrl`、`previewType`、`updatedAt` 等。
+- 部署后如需更新页面列表，**直接修改 `public/mockData.json`（或 `gh-pages` 分支上的同名文件）即可，无需重新构建**。
+- 若修改了 `public/` 下的 `a/`、`b/`、`c/` 静态模板页，需要重新构建并部署（这些页随构建复制到 `dist/`）。
+
+---
+
+## 7. 目录结构
+
+```text
+preview-page/
+├── public/                  # 静态资源（构建时原样复制到 dist/）
+│   ├── index.html
+│   ├── mockData.json        # 运行时数据源
+│   ├── a/ b/ c/             # 静态模板页
+├── src/
+│   ├── api/pageApi.js       # 数据访问层（取数唯一入口）
+│   ├── components/          # PageList / PagePreviewDrawer / PageDetailDialog
+│   ├── App.vue
+│   └── main.js
+├── .env                     # 通用环境变量
+├── .env.production          # 生产构建环境变量（GitHub Pages 路径）
+├── vue.config.js            # Vue CLI 配置（publicPath / outputDir 等）
+├── package.json
+└── README.md
+```
+
+---
+
+## 8. 常见问题
+
+- **子资源 404 / 白屏**：检查 `VUE_APP_PUBLIC_PATH` 是否与部署路径一致，且结尾带 `/`。
+- **预览页打不开**：确认 `mockData.json` 中 `previewUrl` 配置正确；外链预览页若禁止被 iframe 嵌入，可改用卡片上的「跳转预览页」按钮在新标签打开。
+- **GitHub Pages 不更新**：`npm run deploy` 已包含构建步骤；若手动推送，请确认 `gh-pages` 分支内容为最新 `dist/`。
+- **依赖安装慢**：可切换国内 npm 镜像，如 `npm config set registry https://registry.npmmirror.com`。
+
+---
+
+## 许可证
+
+仅供学习与交流使用。
